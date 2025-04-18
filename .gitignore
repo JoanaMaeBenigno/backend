@@ -1,0 +1,32 @@
+# Python bytecode files
+*.pyc
+*.pyo
+__pycache__/
+
+# Virtual environment folder
+.venv/
+.env
+
+# Flask-specific files
+instance/
+
+# IDE or editor folders
+.vscode/
+.idea/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Coverage reports
+.coverage
+*.cover
+.hypothesis/
+.tox/
+.nox/
+.coverage.*
+nosetests.xml
+coverage.xml
