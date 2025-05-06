@@ -30,7 +30,7 @@ def create_category_service(data):
     article = Category(
         id=str(uuid.uuid4()),
         created_date=datetime.now(),
-        name=data.get('title'),
+        name=data.get('name'),
         description=data.get('description'),
         is_deleted=False
     )

@@ -47,13 +47,13 @@ def create_category():
 
     try:
         data = request.get_json()
-        article = create_category_service(data)
+        category = create_category_service(data)
 
         return jsonify({
             "status": "success",
             "message": "Category created successfully",
             "data": {
-                "uuid": article.id
+                "uuid": category.id
             }
         }), 201
 
