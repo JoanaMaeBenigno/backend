@@ -91,7 +91,23 @@ def delete_category(category_id):
 @check_learning_blueprint.route('/question/<category_id>', methods=['GET'])
 def list_questions_with_choices(category_id):
     try:
-        questions = get_questions_with_choices_by_category(category_id)
+        questions = get_questions_with_choices_by_category(category_id, False)
+        return jsonify({
+            "status": "success",
+            "message": "Questions with choices fetched successfully",
+            "data": questions
+        })
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e),
+            "data": None
+        }), 500
+
+@check_learning_blueprint.route('/question/with_answer/<category_id>', methods=['GET'])
+def list_questions_with_choices_and_answer(category_id):
+    try:
+        questions = get_questions_with_choices_by_category(category_id, True)
         return jsonify({
             "status": "success",
             "message": "Questions with choices fetched successfully",

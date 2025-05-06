@@ -50,8 +50,8 @@ def delete_category_service(id):
 
     return False
 
-def get_questions_with_choices_by_category(category_id):
-    questions = db.session.query(Question).filter_by(category_id=category_id).all()
+def get_questions_with_choices_by_category(category_id, with_answer):
+    questions = db.session.query(Question).filter_by(category_id=category_id, is_deleted=False).all()
 
     result = []
     for q in questions:
@@ -64,11 +64,14 @@ def get_questions_with_choices_by_category(category_id):
             for a in answers
         ]
 
-        result.append({
+        to_append = {
             "id": q.id,
             "question_text": q.question_text,
-            "choices": choices
-        })
+            "choices": choices,
+            **({"correct_option": q.correct_option} if with_answer else {})
+        }
+
+        result.append(to_append)
 
     return result
 
