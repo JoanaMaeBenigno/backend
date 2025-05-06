@@ -15,7 +15,7 @@ def get_single_category(category_id):
     }
 
 def get_all_categories():
-    categories = db.session.query(Category).all()
+    categories = db.session.query(Category).filter_by(is_deleted=False).all()
     return [
         {
             "id": category.id,
