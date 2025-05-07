@@ -3,6 +3,7 @@ from datetime import datetime
 from src.models.category_model import Category
 from src.models.question_model import Question
 from src.models.answer_model import Choices
+from src.models.survey_model import Survey
 from src.config.extensions import db
 
 def get_single_category(category_id):
@@ -55,7 +56,7 @@ def get_questions_with_choices_by_category(category_id, with_answer):
 
     result = []
     for q in questions:
-        answers = db.session.query(Choices).filter_by(question_id=q.id).all()
+        answers = db.session.query(Choices).filter_by(id=q.id).all()
         choices = [
             {
                 "id": a.id,
@@ -121,6 +122,57 @@ def delete_question_service(id):
 
     if question:
         question.is_deleted = True
+        db.session.commit()
+        return True
+
+    return False
+
+# Survey Related
+def save_survey(data):
+    category = db.session \
+        .query(Category) \
+        .filter_by(id=data["category_id"], is_deleted=False) \
+        .first()
+
+    if not category:
+        raise ValueError(f"Category ID '{data['category_id']}' does not exist.")
+
+    survey_id = str(uuid.uuid4())
+
+    survey = Survey(
+        id=survey_id,
+        category_id=data["category_id"],
+        question_text=data["question_text"],
+        is_deleted=False,
+        created_date=datetime.now()
+    )
+    db.session.add(survey)
+
+    db.session.commit()
+
+    return {"id": survey_id}
+
+def get_survey_questions_by_category(category_id):
+    survey_questions = db.session \
+        .query(Survey.id, Survey.question_text) \
+        .filter_by(category_id=category_id, is_deleted=False) \
+        .all()
+
+    results = [
+        {
+            "id": survey.id,
+            "question_text": survey.question_text
+        }
+        for survey in survey_questions
+    ]
+
+    return results
+
+def delete_survey_question_service(id):
+    survey_question = Survey.query.filter_by(id=id, is_deleted=False).first()
+
+    if survey_question:
+        survey_question.is_deleted = True
         db.session.commit()
         return True
 

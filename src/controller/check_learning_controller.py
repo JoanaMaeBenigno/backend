@@ -5,10 +5,14 @@ from src.services.check_learning_service import get_all_categories,\
     create_category_service, \
     delete_category_service, \
     save_question_with_choices, \
-    delete_question_service
+    delete_question_service, \
+    save_survey, \
+    get_survey_questions_by_category, \
+    delete_survey_question_service
 
 check_learning_blueprint = Blueprint('check_learning', __name__, url_prefix='/check_learning')
 
+# Category Related
 @check_learning_blueprint.route('/category', methods=['GET'])
 def get_categories():
     try:
@@ -88,6 +92,7 @@ def delete_category(category_id):
             "data": None
         }), 500
 
+# Question Related
 @check_learning_blueprint.route('/question/<category_id>', methods=['GET'])
 def list_questions_with_choices(category_id):
     try:
@@ -152,6 +157,64 @@ def delete_question(question_id):
             return jsonify({
                 "status": "error",
                 "message": "Question not found or already deleted",
+                "data": None
+            }), 404
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e),
+            "data": None
+        }), 500
+
+# Survey Related
+@check_learning_blueprint.route('/survey', methods=['POST'])
+def create_survey():
+    data = request.get_json()
+    try:
+        result = save_survey(data)
+
+        return jsonify({
+            "status": "success",
+            "message": "Survey question saved successfully",
+            "data": result
+        }), 201
+    except ValueError as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 400
+
+@check_learning_blueprint.route('/survey/<category_id>', methods=['GET'])
+def list_survey_questions(category_id):
+    try:
+        survey_questions = get_survey_questions_by_category(category_id)
+        return jsonify({
+            "status": "success",
+            "message": "Survey questions fetched successfully",
+            "data": survey_questions
+        })
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e),
+            "data": None
+        }), 500
+
+@check_learning_blueprint.route('/survey/<survey_id>', methods=['DELETE'])
+def delete_survey(survey_id):
+    try:
+        result = delete_survey_question_service(survey_id)
+
+        if result:
+            return jsonify({
+                "status": "success",
+                "message": "Survey question soft-deleted successfully",
+                "data": {"id": survey_id}
+            })
+        else:
+            return jsonify({
+                "status": "error",
+                "message": "Survey question not found or already deleted",
                 "data": None
             }), 404
     except Exception as e:
