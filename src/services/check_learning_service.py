@@ -56,7 +56,7 @@ def get_questions_with_choices_by_category(category_id, with_answer):
 
     result = []
     for q in questions:
-        answers = db.session.query(Choices).filter_by(id=q.id).all()
+        answers = db.session.query(Choices).filter_by(question_id=q.id).all()
         choices = [
             {
                 "id": a.id,
