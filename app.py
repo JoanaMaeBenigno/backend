@@ -9,6 +9,7 @@ from src.controller.articles_controller import article_blueprint
 from src.controller.check_learning_controller import check_learning_blueprint
 from src.controller.files_controller import file_blueprint
 from src.controller.question_result_controller import question_result_blueprint
+from src.controller.survey_result_controller import survey_result_blueprint
 
 app = Flask(__name__)
 CORS(app)
@@ -20,6 +21,7 @@ app.register_blueprint(article_blueprint)
 app.register_blueprint(check_learning_blueprint)
 app.register_blueprint(file_blueprint)
 app.register_blueprint(question_result_blueprint)
+app.register_blueprint(survey_result_blueprint)
 
 if __name__ == '__main__':
     debug = os.getenv("DEBUG", "False").lower() == "true"

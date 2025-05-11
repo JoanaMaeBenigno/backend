@@ -1,9 +1,11 @@
 import uuid
 from datetime import datetime
+from sqlalchemy import func
 from src.models.category_model import Category
 from src.models.question_model import Question
 from src.models.answer_model import Choices
 from src.models.survey_model import Survey
+from src.models.question_result_model import QuestionResult
 from src.config.extensions import db
 
 def get_single_category(category_id):
@@ -15,6 +17,19 @@ def get_single_category(category_id):
         "description": category.description
     }
 
+def __get_passrate(category_id):
+    passing_percentage = 50
+
+    takers_count = db.session.query(func.count(QuestionResult.id)).filter(QuestionResult.category_id == category_id).scalar()
+    pass_count = db.session.query(func.count(QuestionResult.id)).filter(
+        ((QuestionResult.correct_answer / QuestionResult.question_count) * 100) >= passing_percentage,
+        QuestionResult.category_id == category_id
+    ).scalar()
+    if pass_count == 0:
+        return 0
+
+    return int(round((pass_count / takers_count) * 100, 0))
+
 def get_all_categories():
     categories = db.session.query(Category).filter_by(is_deleted=False).all()
     return [
@@ -22,7 +37,7 @@ def get_all_categories():
             "id": category.id,
             "name": category.name,
             "description": category.description,
-            "passRate": 78
+            "passRate": __get_passrate(category.id)
         }
         for category in categories
     ]

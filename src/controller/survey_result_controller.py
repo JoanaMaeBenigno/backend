@@ -1,17 +1,18 @@
 from flask import Blueprint, request, jsonify
-from src.services.question_result_service import post_question_result_service, get_result_service
+# from src.services.question_result_service import post_question_result_service, get_result_service
+from src.services.survey_result_service import post_survey_result_service, get_result_service
 
-question_result_blueprint = Blueprint('question_result', __name__, url_prefix='/question_result')
+survey_result_blueprint = Blueprint('survey_result', __name__, url_prefix='/survey_result')
 
-@question_result_blueprint.route('', methods=['POST'])
+@survey_result_blueprint.route('', methods=['POST'])
 def post_result():
     try:
         data = request.get_json()
-        result = post_question_result_service(data)
+        result = post_survey_result_service(data)
 
         return jsonify({
             "status": "success",
-            "message": "Posts fetched successfully",
+            "message": "Survey result posted successfully",
             "data": result
         })
     except Exception as e:
@@ -21,7 +22,7 @@ def post_result():
             "data": None
         }), 500
 
-@question_result_blueprint.route('<id>', methods=['GET'])
+@survey_result_blueprint.route('<id>', methods=['GET'])
 def get_result(id):
     try:
         result = get_result_service(id)
