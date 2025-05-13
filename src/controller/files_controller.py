@@ -8,6 +8,7 @@ file_blueprint = Blueprint('file', __name__, url_prefix='/file')
 
 WORKSHEET = 'WORKSHEET'
 LESSON = 'LESSON'
+VIDEO = 'VIDEO'
 
 # Common related
 @file_blueprint.route('/common/<id>', methods=['GET'])
@@ -130,6 +131,50 @@ def create_lesson():
     return jsonify({
       "status": "success",
       "message": "Lesson created successfully",
+      "data": {
+        "id": lesson.id
+      }
+    }), 201
+
+  except Exception as e:
+    return jsonify({
+      "status": "error",
+      "message": str(e),
+      "data": None
+    }), 500
+
+# Video related
+@file_blueprint.route('/video', methods=['GET'])
+def get_videos():
+  try:
+    data = get_files_by_type_service(VIDEO)
+
+    return jsonify({
+      "status": "success",
+      "message": "Video links fetched successfully",
+      "data": data
+    })
+
+  except Exception as e:
+    return jsonify({
+      "status": "error",
+      "message": str(e),
+      "data": None
+    }), 500
+
+@file_blueprint.route('/video', methods=['POST'])
+def create_video():
+  data = request.get_json()
+
+  try:
+    data = request.get_json()
+    data['description'] = ''
+    data['title'] = ''
+    lesson = create_file_service(data, VIDEO)
+
+    return jsonify({
+      "status": "success",
+      "message": "Video link created successfully",
       "data": {
         "id": lesson.id
       }
