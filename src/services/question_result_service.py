@@ -12,6 +12,8 @@ def get_category_average(user_average: float, category_id: str):
     user_average > (QuestionResult.correct_answer / QuestionResult.question_count),
     QuestionResult.category_id == category_id
   ).scalar()
+  if count_all == 0:
+    return 100.0
 
   percentage_higher = (filter_count / count_all) * 100
 

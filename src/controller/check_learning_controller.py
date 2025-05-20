@@ -17,7 +17,7 @@ check_learning_blueprint = Blueprint('check_learning', __name__, url_prefix='/ch
 def get_categories():
     try:
         data = get_all_categories()
-        print(data)
+
         return jsonify({
             "status": "success",
             "message": "Categories fetched successfully",
@@ -114,6 +114,7 @@ def list_questions_with_choices(category_id):
 def list_questions_with_choices_and_answer(category_id):
     try:
         questions = get_questions_with_choices_by_category(category_id, True)
+
         return jsonify({
             "status": "success",
             "message": "Questions with choices fetched successfully",
